@@ -1,0 +1,22 @@
+library(readxl)
+new_data <- read_excel(file.choose())
+head(new_data)      
+model_sw <- aov(Variety ~ SeedWeight, data = new_data)
+summary(model_sw)
+install.packages("agricolae")
+library(agricolae)
+model_sw <- aov(SeedWeight ~ Variety, data = new_data)
+lsd_result1 <- LSD.test(model_sw, "Variety", p.adj = "none")
+summary(lsd_result1)
+lsd_result1$groups
+
+new_data <- na.omit(new_data)
+new_data$Variety <- trimws(new_data$Variety)
+new_data$GermTest <- trimws(new_data$GermTest)
+new_data$Variety <- as.factor(new_data$Variety)
+new_data$GermTest <- as.factor(new_data$GermTest)
+new_data$Percentage <- as.numeric(new_data$Percentage)
+model_germtest <- aov(Percentage~Variety+ GermTest, data = new_data)
+summary(model_germtest)
+lsd_result2 <- LSD.test(model_germtest, "Variety", p.adj = "none")
+lsd_result2$groups
