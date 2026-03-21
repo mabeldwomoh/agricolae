@@ -1,15 +1,20 @@
+#Basic Anova
+#reading my excel file 
 library(readxl)
 new_data <- read_excel(file.choose())
-head(new_data)      
-model_sw <- aov(Variety ~ SeedWeight, data = new_data)
-summary(model_sw)
+head(new_data) 
+
+#Anova for data (one interaction)
 install.packages("agricolae")
 library(agricolae)
 model_sw <- aov(SeedWeight ~ Variety, data = new_data)
+
+#Groupings 
 lsd_result1 <- LSD.test(model_sw, "Variety", p.adj = "none")
 summary(lsd_result1)
 lsd_result1$groups
 
+#omiting NAs and defining factors (always define factors)
 new_data <- na.omit(new_data)
 new_data$Variety <- trimws(new_data$Variety)
 new_data$GermTest <- trimws(new_data$GermTest)
@@ -20,3 +25,27 @@ model_germtest <- aov(Percentage~Variety+ GermTest, data = new_data)
 summary(model_germtest)
 lsd_result2 <- LSD.test(model_germtest, "Variety", p.adj = "none")
 lsd_result2$groups
+
+# Anova for replications 
+library(readxl)
+soybean <- read_excel(file.choose())
+head(soybean)
+
+# I used agricolae for Anova 
+library(agricolae)
+soybean$Plot <- as.factor(soybean$Plot)
+soybean$Rep <- as.factor(soybean$Rep)
+soybean$Variety <- as.factor(soybean$Variety)
+soybeans <- aov(Sd_oct16~Variety+Rep, data = soybean)
+summary(soybeans)
+
+#testing significance/ groupings
+tuk <- TukeyHSD(soybeans, "Variety")
+format.pval(tuk$Variety[, "p adj"], digits = 3)
+tukey <- HSD.test(soybeans, "Variety", group = TRUE)
+tukey$groups
+
+#save as document/Table format
+write.csv(tukey$groups, "SdOct9", row.names = TRUE)
+
+
