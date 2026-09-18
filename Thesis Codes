@@ -15,3 +15,9 @@ proc glimmix data=IMPORT;
     random Rep Rep*Variety;
  lsmeans Variety Date / pdiff adjust=tukey lines;
 run;
+
+# Normality of residuals
+proc univariate data=resids normal;
+    var Resid;
+    histogram Resid / normal;
+run;
