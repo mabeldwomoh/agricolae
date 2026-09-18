@@ -7,3 +7,11 @@ run;
 
 # Normality Distribution in R 
 shapiro.test(data$Stand)
+
+# Repeated Measures and comparison of means in sas 
+proc glimmix data=IMPORT;
+    class Rep Date Variety;
+    model Stand = Variety Date Variety*Date / ddfm=kr;
+    random Rep Rep*Variety;
+ lsmeans Variety Date / pdiff adjust=tukey lines;
+run;
