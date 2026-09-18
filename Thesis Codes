@@ -1,0 +1,9 @@
+# Normality Distribution in Sas
+proc univariate data=IMPORT normal plot;
+    var Stand;
+    histogram Stand/ normal;
+    probplot Stand / normal;
+run;
+
+# Normality Distribution in R 
+shapiro.test(data$Stand)
